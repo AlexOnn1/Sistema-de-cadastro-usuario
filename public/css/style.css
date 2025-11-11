@@ -1,65 +1,6 @@
-/* Reset CSS (combinação leve: normalize + reset) */
-/* Fonte: prática comum de reset/normalize — redefine caixas, margens e fontes básicas */
-*, *::before, *::after{
-    box-sizing: border-box;
-}
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video{
-    margin: 0;
-    padding: 0;
-    border: 0;
-    vertical-align: baseline;
-    font-size: 100%;
-    font: inherit;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section{
-    display: block;
-}
-body{
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-ol, ul{
-    list-style: none;
-}
-blockquote, q{
-    quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after{
-    content: '';
-    content: none;
-}
-table{
-    border-collapse: collapse;
-    border-spacing: 0;
-}
+/* [Seu Reset CSS completo vem aqui...] */
 
-/* Base utilities */
-img{
-    max-width: 100%;
-    height: auto;
-    display: block;
-}
-button, input, select, textarea{
-    font: inherit;
-    background: none;
-    color: inherit;
-}
+/* ... (Todo o seu reset) ... */
 
 /* End of reset */
 
@@ -68,36 +9,105 @@ body{
     align-items: center;
     justify-content: center;
     height: 100dvh;
-    background-color: #99b2b7;
+    background-color: #F0F2F5; /* Cor cinza claro, como no wireframe */
+    font-family: Arial, sans-serif; /* Adicionado uma fonte padrão */
 }
 
 .container h1{
     font-size: 1.6rem;
     font-weight: bold;
+    text-align: center; /* O título no wireframe parece centralizado */
 }
 
 .container{
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; 
-    width: 20rem;
-    background-color: #d5ded9 ;
+    gap: 1.5rem; /* Espaço entre o H1 e o Form */
+    width: 22rem; /* Um pouco mais largo */
+    background-color: #FFFFFF; /* Fundo branco do card */
     padding: 2rem 3rem;
     border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Sombra sutil */
 }
 
 .container form{
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    gap: 1.25rem; /* Espaçamento entre os 'form-group' */
 }
 
-.container form input{
+/* Novo grupo para organizar label/input */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Espaço entre label e input */
+}
+
+.container form label{
+    font-weight: 500; /* Um leve peso na fonte */
+}
+
+.container form input[type="email"],
+.container form input[type="password"] {
     border-radius: 8px;
-    border: #abacabaf solid 0.1rem;
-    padding: 0.4rem;
+    border: #CDCDCD solid 1px; /* Borda mais sutil */
+    padding: 0.8rem 0.6rem; /* Mais padding interno */
+    width: 100%; /* Garante que ocupe todo o espaço */
 }
 
-.container form .separador{
-    margin-bottom: 2rem;
+/* Estilo do helper text */
+.form-group small {
+    font-size: 0.8rem;
+    color: #6C757D; /* Cinza sutil */
+}
+
+/* Grupo do Checkbox */
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grupo dos Botões */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem; /* Espaço extra antes dos botões */
+}
+
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #0056b3; /* Azul do wireframe */
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #F0F2F5; /* Fundo cinza claro */
+    color: #333;
+}
+
+/* Adicione isto ao final do seu style.css */
+
+.login-link {
+    text-align: center;
+    margin-top: 1rem; /* Um espacinho extra */
+    font-size: 0.9rem;
+}
+
+.login-link a {
+    color: #0056b3; /* Usando o mesmo azul do botão */
+    text-decoration: none; /* Tirar o sublinhado padrão */
+    font-weight: 600;
+}
+
+.login-link a:hover {
+    text-decoration: underline; /* Mostrar sublinhado no hover */
 }

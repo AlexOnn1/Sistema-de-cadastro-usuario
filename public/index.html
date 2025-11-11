@@ -4,30 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Usuário</title>
-
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <section class="container">
         <h1>Cadastro</h1>
 
-        <form action="" method="get">
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="Insira um e-mail" class="separador">
+        <form action="" method="post">
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" placeholder="Insira seu e-mail">
+            </div>
 
-            <label for="conf-email">Confirmar E-mail</label>
-            <input type="email" name="confirmarEmail" id="confirmarEmail"class="separador">
+            <div class="form-group">
+                <label for="confirmarEmail">Confirmar E-mail</label>
+                <input type="email" name="confirmarEmail" id="confirmarEmail" placeholder="Confirme seu e-mail">
+            </div>
 
-            <label for="senha">Senha</label>
-            <input type="password" name="senha" id="senha">
-            <label for="senha" class="separador carac">De 8 a 16 caracteres</label>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" placeholder="Insira sua senha" aria-describedby="senha-helper">
+                <small id="senha-helper">De 8 a 16 caracteres</small>
+            </div>
 
-            <label for="confirmarSenha">Confirmar Senha</label>
-            <input type="password" name="confirmarSenha" id="confirmarSenha"class="separador">
+            <div class="form-group">
+                <label for="confirmarSenha">Confirmar Senha</label>
+                <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme sua senha">
+            </div>
 
-            <input type="checkbox" name="termos" id="termos">
-            <label for="termos">Concordo com os termos de serviço</label>
-        </form>
-    </section>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" name="termos" id="termos">
+                <label for="termos">Concordo com os termos de serviço</label>
+            </div>
+
+            <div class="button-group">
+            <button type="button" class="btn btn-secondary">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+
+        <div class="login-link">
+            <a href="login.html">Já possui uma conta?</a>
+        </div>
+
+    </form>
+</section>
 </body>
 </html>
