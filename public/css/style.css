@@ -1,78 +1,68 @@
-/* [Seu Reset CSS completo vem aqui...] */
-
-/* ... (Todo o seu reset) ... */
-
-/* End of reset */
-
 body{
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100dvh;
-    background-color: #F0F2F5; /* Cor cinza claro, como no wireframe */
-    font-family: Arial, sans-serif; /* Adicionado uma fonte padrão */
+    background-color: #F0F2F5;
+    font-family: Arial, sans-serif;
 }
 
 .container h1{
     font-size: 1.6rem;
     font-weight: bold;
-    text-align: center; /* O título no wireframe parece centralizado */
+    text-align: center;
 }
 
 .container{
     display: flex;
     flex-direction: column;
-    gap: 1.5rem; /* Espaço entre o H1 e o Form */
-    width: 22rem; /* Um pouco mais largo */
-    background-color: #FFFFFF; /* Fundo branco do card */
+    gap: 1.5rem;
+    width: 22rem;
+    background-color: #FFFFFF;
     padding: 2rem 3rem;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Sombra sutil */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .container form{
     display: flex;
     flex-direction: column;
-    gap: 1.25rem; /* Espaçamento entre os 'form-group' */
+    gap: 1.25rem;
 }
 
-/* Novo grupo para organizar label/input */
 .form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem; /* Espaço entre label e input */
+    gap: 0.5rem;
 }
 
 .container form label{
-    font-weight: 500; /* Um leve peso na fonte */
+    font-weight: 500;
 }
 
 .container form input[type="email"],
 .container form input[type="password"] {
     border-radius: 8px;
-    border: #CDCDCD solid 1px; /* Borda mais sutil */
-    padding: 0.8rem 0.6rem; /* Mais padding interno */
-    width: 100%; /* Garante que ocupe todo o espaço */
+    border: #CDCDCD solid 1px;
+    padding: 0.8rem 0.6rem;
+    width: 100%;
 }
 
-/* Estilo do helper text */
 .form-group small {
     font-size: 0.8rem;
-    color: #6C757D; /* Cinza sutil */
+    color: #6C757D;
 }
 
-/* Grupo do Checkbox */
 .checkbox-group {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
 }
 
-/* Grupo dos Botões */
 .button-group {
     display: flex;
     gap: 1rem;
-    margin-top: 1rem; /* Espaço extra antes dos botões */
+    margin-top: 1rem;
 }
 
 .btn {
@@ -85,29 +75,27 @@ body{
 }
 
 .btn-primary {
-    background-color: #0056b3; /* Azul do wireframe */
+    background-color: #0056b3;
     color: white;
 }
 
 .btn-secondary {
-    background-color: #F0F2F5; /* Fundo cinza claro */
+    background-color: #F0F2F5;
     color: #333;
 }
 
-/* Adicione isto ao final do seu style.css */
-
 .login-link {
     text-align: center;
-    margin-top: 1rem; /* Um espacinho extra */
+    margin-top: 1rem;
     font-size: 0.9rem;
 }
 
 .login-link a {
-    color: #0056b3; /* Usando o mesmo azul do botão */
-    text-decoration: none; /* Tirar o sublinhado padrão */
+    color: #0056b3;
+    text-decoration: none;
     font-weight: 600;
 }
 
 .login-link a:hover {
-    text-decoration: underline; /* Mostrar sublinhado no hover */
+    text-decoration: underline;
 }
