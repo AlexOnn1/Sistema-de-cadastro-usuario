@@ -1,4 +1,6 @@
 // 1. Verificação do Envio do formulário
+<?php
+session_start();
 if (isset($_POST["submit"])) {
     // 2. Coleta de dados
     $email = htmlspecialchars($_POST["email"]);
