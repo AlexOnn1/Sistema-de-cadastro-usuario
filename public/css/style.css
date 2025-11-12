@@ -99,3 +99,82 @@ body{
 .login-link a:hover {
     text-decoration: underline;
 }
+
+/* Estilos de erro */
+.erro-container {
+    display: none;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.erro-container p {
+    color: #721c24;
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+.erro-container p:first-child {
+    margin-top: 0;
+}
+
+.erro-container p:last-child {
+    margin-bottom: 0;
+}
+
+/* Estilos do Modal de Sucesso */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-sucesso-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto 1rem;
+}
+
+.modal-content h2 {
+    color: #333;
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    color: #666;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: bold;
+}

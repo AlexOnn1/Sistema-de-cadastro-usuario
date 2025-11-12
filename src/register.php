@@ -1,16 +1,11 @@
 // 1. Verificação do Envio do formulário
 <?php
 session_start();
-if (isset($_POST["submit"])) {
-    // 2. Coleta de dados
-    $email = htmlspecialchars($_POST["email"]);
-    $confirmarEmail = htmlspecialchars($_POST["confirmarEmail"]);
-    $senha = $_POST["senha"];
-    $confirmarSenha = $_POST["confirmarSenha"];
-}
-    // 3. Validação do email
-    $erros = [];
+header('Content-Type: application/json');
+
+$erros = [];
 $email = trim($_POST['email'] ?? '');
+$confirmarEmail = trim($_POST['confirmarEmail'] ?? '');
 $senha = $_POST['senha'] ?? '';
 $confirmarSenha = $_POST['confirmarSenha'] ?? '';
 
@@ -20,17 +15,21 @@ if ($email === '') {
     $erros[] = "Email inválido.";
 }
 
+if ($confirmarEmail === '' || $email !== $confirmarEmail) {
+    $erros[] = "Os emails não correspondem.";
+}
+
 // 4. Validação da senha
 if ($senha === '' || $confirmarSenha === '') {
     $erros[] = "Preencha os campos de senha.";
 } elseif ($senha !== $confirmarSenha) {
     $erros[] = "As senhas não são iguais.";
+} elseif (strlen($senha) < 8 || strlen($senha) > 16) {
+    $erros[] = "A senha deve ter entre 8 e 16 caracteres.";
 }
 
 if (!empty($erros)) {
-    foreach ($erros as $err) {
-        echo "<p>" . htmlspecialchars($err) . "</p>";
-    }
+    echo json_encode(['sucesso' => false, 'erros' => $erros]);
     exit();
 }
 
@@ -49,11 +48,10 @@ try {
     $stmt = $pdo->prepare("INSERT INTO usuarios (email, senha) VALUES (:email, :senha)");
     $stmt->execute(['email' => $email, 'senha' => $senhaHash]);
 
-    echo "<h1>Cadastro Realizado!</h1>";
+    echo json_encode(['sucesso' => true, 'mensagem' => 'Cadastro realizado com sucesso!']);
     exit();
 } catch (PDOException $e) {
-    // Não exponha mensagens sensíveis em produção — aqui para debug
-    echo "<h1>Erro ao cadastrar</h1><p>" . htmlspecialchars($e->getMessage()) . "</p>";
+    $erros[] = "Erro ao cadastrar. Tente novamente mais tarde.";
+    echo json_encode(['sucesso' => false, 'erros' => $erros]);
     exit();
 }
-// PHP e muito dificil.
