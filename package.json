@@ -1,0 +1,11 @@
+{
+  "name": "sistema-de-cadastro-usuario",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "mysql2": "^3.3.0"
+  }
+}

@@ -1,9 +1,16 @@
 <?php
+// 1. Verificação do Envio do formulário
 session_start();
 header('Content-Type: application/json');
 
+<<<<<<< HEAD
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+=======
+// Ativar relatório de erros para debug (comentar em produção)
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Não exibir HTML, apenas JSON
+>>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
 
 $erros = [];
 $email = trim($_POST['email'] ?? '');
@@ -45,6 +52,10 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+<<<<<<< HEAD
+=======
+    // Verificar se o email já existe
+>>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
     $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
     $stmtVerify->execute(['email' => $email]);
     $emailExiste = $stmtVerify->fetchColumn();
@@ -60,6 +71,12 @@ try {
     echo json_encode(['sucesso' => true, 'mensagem' => 'Cadastro realizado com sucesso!']);
     exit();
 } catch (PDOException $e) {
+<<<<<<< HEAD
+=======
+    // Log do erro (opcional - salvar em arquivo)
+    // error_log("Erro PDO: " . $e->getMessage());
+    
+>>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
     $erros[] = "Erro ao conectar ao banco de dados. Verifique se o servidor MySQL está rodando.";
     echo json_encode(['sucesso' => false, 'erros' => $erros, 'debug' => $e->getMessage()]);
     exit();
