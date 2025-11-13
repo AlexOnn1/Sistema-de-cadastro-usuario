@@ -93,11 +93,6 @@ function enviarFormulario() {
             } else {
                 exibirErro('Erro ao processar o cadastro. Tente novamente.');
             }
-<<<<<<< HEAD
-=======
-            
-            // Debug: mostrar mensagem de debug se disponível
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
             if (dados.debug) {
                 console.error('Debug info:', dados.debug);
             }

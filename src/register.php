@@ -71,12 +71,6 @@ try {
     echo json_encode(['sucesso' => true, 'mensagem' => 'Cadastro realizado com sucesso!']);
     exit();
 } catch (PDOException $e) {
-<<<<<<< HEAD
-=======
-    // Log do erro (opcional - salvar em arquivo)
-    // error_log("Erro PDO: " . $e->getMessage());
-    
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
     $erros[] = "Erro ao conectar ao banco de dados. Verifique se o servidor MySQL está rodando.";
     echo json_encode(['sucesso' => false, 'erros' => $erros, 'debug' => $e->getMessage()]);
     exit();
