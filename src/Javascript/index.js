@@ -100,14 +100,23 @@ function enviarFormulario() {
         } else {
             // Exibir erros do servidor
             limparErros();
-            dados.erros.forEach(erro => {
-                exibirErro(erro);
-            });
+            if (dados.erros && Array.isArray(dados.erros)) {
+                dados.erros.forEach(erro => {
+                    exibirErro(erro);
+                });
+            } else {
+                exibirErro('Erro ao processar o cadastro. Tente novamente.');
+            }
+            
+            // Debug: mostrar mensagem de debug se disponível
+            if (dados.debug) {
+                console.error('Debug info:', dados.debug);
+            }
         }
     })
     .catch(erro => {
-        exibirErro('Erro ao processar o cadastro. Tente novamente.');
-        console.error('Erro:', erro);
+        exibirErro('Erro ao processar o cadastro. Verifique se o servidor está rodando.');
+        console.error('Erro na requisição:', erro);
     });
 }
 
