@@ -3,14 +3,8 @@
 session_start();
 header('Content-Type: application/json');
 
-<<<<<<< HEAD
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
-=======
-// Ativar relatório de erros para debug (comentar em produção)
-error_reporting(E_ALL);
-ini_set('display_errors', 0); // Não exibir HTML, apenas JSON
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
 
 $erros = [];
 $email = trim($_POST['email'] ?? '');
@@ -51,11 +45,7 @@ $pass = "1234";
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-<<<<<<< HEAD
-=======
     // Verificar se o email já existe
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
     $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
     $stmtVerify->execute(['email' => $email]);
     $emailExiste = $stmtVerify->fetchColumn();
