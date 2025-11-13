@@ -1,15 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "npm install",
   "functions": {
     "api/**/*.php": {
-      "runtime": "php-8.3"
+      "runtime": "vercel-php@0.6.1"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/$1.php"
     },
     {
       "src": "/(.*)",
