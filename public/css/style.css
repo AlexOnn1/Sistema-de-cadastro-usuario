@@ -100,7 +100,6 @@ body{
     text-decoration: underline;
 }
 
-/* Estilos de erro */
 .erro-container {
     display: none;
     background-color: #f8d7da;
@@ -124,7 +123,6 @@ body{
     margin-bottom: 0;
 }
 
-/* Estilos do Modal de Sucesso */
 .modal-overlay {
     position: fixed;
     top: 0;

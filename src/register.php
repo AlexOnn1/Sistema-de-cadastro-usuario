@@ -1,7 +1,9 @@
-// 1. Verificação do Envio do formulário
 <?php
 session_start();
 header('Content-Type: application/json');
+
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 
 $erros = [];
 $email = trim($_POST['email'] ?? '');
@@ -19,7 +21,6 @@ if ($confirmarEmail === '' || $email !== $confirmarEmail) {
     $erros[] = "Os emails não correspondem.";
 }
 
-// 4. Validação da senha
 if ($senha === '' || $confirmarSenha === '') {
     $erros[] = "Preencha os campos de senha.";
 } elseif ($senha !== $confirmarSenha) {
@@ -35,15 +36,23 @@ if (!empty($erros)) {
 
 $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-// 5. Conexão com o Banco de Dados
 $host = "localhost";
 $database = "Projeto_Trabalho";
-$user = "alex";
-$pass = "Pato";
+$user = "gilma";
+$pass = "1234";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
+    $stmtVerify->execute(['email' => $email]);
+    $emailExiste = $stmtVerify->fetchColumn();
+
+    if ($emailExiste > 0) {
+        echo json_encode(['sucesso' => false, 'erros' => ['Este email já está cadastrado.']]);
+        exit();
+    }
 
     $stmt = $pdo->prepare("INSERT INTO usuarios (email, senha) VALUES (:email, :senha)");
     $stmt->execute(['email' => $email, 'senha' => $senhaHash]);
@@ -51,7 +60,8 @@ try {
     echo json_encode(['sucesso' => true, 'mensagem' => 'Cadastro realizado com sucesso!']);
     exit();
 } catch (PDOException $e) {
-    $erros[] = "Erro ao cadastrar. Tente novamente mais tarde.";
-    echo json_encode(['sucesso' => false, 'erros' => $erros]);
+    $erros[] = "Erro ao conectar ao banco de dados. Verifique se o servidor MySQL está rodando.";
+    echo json_encode(['sucesso' => false, 'erros' => $erros, 'debug' => $e->getMessage()]);
     exit();
 }
+
