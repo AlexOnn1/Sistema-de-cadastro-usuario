@@ -1,0 +1,52 @@
+<?php
+// 1. Configuração e Verificação de Autenticação
+session_start();
+header('Content-Type: application/json');
+
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // 
+
+$erros = [];
+$user_id = $_SESSION['user_id'] ?? null; // ID do usuário logado
+
+// Verificação de segurança
+if (!$user_id) {
+    echo json_encode(['sucesso' => false, 'erros' => ['Você precisa estar logado para excluir sua conta.']]);
+    exit();
+}
+
+// 2. Conexão ao Banco de Dados(Denovo)
+$host = "localhost";
+$database = "projeto_trabalho";
+$user = "gilma";
+$pass = "1234";
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // 3. Execução da Query DELETE
+    $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = :id");
+    $stmt->execute(['id' => $user_id]);
+
+    // 4. Finalização e Destruição da Sessão
+    
+    if ($stmt->rowCount() > 0) {
+        session_unset();
+        session_destroy();
+
+        echo json_encode(['sucesso' => true, 'mensagem' => 'Sua conta foi excluída com sucesso!']);
+        exit();
+    } else {
+        echo json_encode(['sucesso' => false, 'erros' => ['Não foi possível encontrar a conta para exclusão.']]);
+        exit();
+    }
+
+
+} catch (PDOException $e) {
+    $erros[] = "Erro ao conectar ou excluir no banco de dados.";
+    echo json_encode(['sucesso' => false, 'erros' => $erros, 'debug' => $e->getMessage()]);
+    exit();
+}
+
+?>
