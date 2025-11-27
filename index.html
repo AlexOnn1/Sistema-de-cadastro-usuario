@@ -11,46 +11,62 @@
     <section class="container">
         <h1>Cadastro</h1>
 
-        <form action="/api/register" method="post" id="formulario">
-            
-            <div id="erro-msg" class="erro-container"></div>
-            
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" placeholder="Insira seu e-mail" required>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmarEmail">Confirmar E-mail</label>
-                <input type="email" name="confirmarEmail" id="confirmarEmail" placeholder="Confirme seu e-mail" required>
-            </div>
-
-            <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" name="senha" id="senha" placeholder="Insira sua senha" aria-describedby="senha-helper" required minlength="8" maxlength="16">
-                <small id="senha-helper">De 8 a 16 caracteres</small>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmarSenha">Confirmar Senha</label>
-                <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme sua senha" required minlength="8" maxlength="16">
-            </div>
-
-            <div class="form-group checkbox-group">
-                <input type="checkbox" name="termos" id="termos" required>
-                <label for="termos">Concordo com os termos de serviço</label>
-            </div>
-
-            <div class="button-group">
-            <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
+<form action="/api/register" method="post" id="formulario">
+    
+    <div id="erro-msg" class="erro-container"></div>
+    
+    <div style="display: flex; gap: 1rem;">
+        <div class="form-group" style="flex: 1;">
+            <label for="nome">Nome</label>
+            <input type="text" name="nome" id="nome" placeholder="Seu nome" required maxlength="25">
         </div>
-
-        <div class="login-link">
-            <a href="public/login.html">Já possui uma conta?</a>
+        <div class="form-group" style="flex: 1;">
+            <label for="sobrenome">Sobrenome</label>
+            <input type="text" name="sobrenome" id="sobrenome" placeholder="Seu sobrenome" required maxlength="25">
         </div>
+    </div>
 
-    </form>
+    <div class="form-group">
+        <label for="idade">Idade</label>
+        <input type="number" name="idade" id="idade" placeholder="Sua idade" required min="1" max="120">
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" placeholder="Insira seu e-mail" required>
+    </div>
+
+    <div class="form-group">
+        <label for="confirmarEmail">Confirmar E-mail</label>
+        <input type="email" name="confirmarEmail" id="confirmarEmail" placeholder="Confirme seu e-mail" required>
+    </div>
+
+    <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" name="senha" id="senha" placeholder="Insira sua senha" required minlength="8" maxlength="16">
+        <small id="senha-helper">De 8 a 16 caracteres</small>
+    </div>
+
+    <div class="form-group">
+        <label for="confirmarSenha">Confirmar Senha</label>
+        <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme sua senha" required minlength="8" maxlength="16">
+    </div>
+
+    <div class="form-group checkbox-group">
+        <input type="checkbox" name="termos" id="termos" required>
+        <label for="termos">Concordo com os termos de serviço</label>
+    </div>
+
+    <div class="button-group">
+        <button type="button" class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </div>
+
+    <div class="login-link">
+        <a href="public/login.html">Já possui uma conta?</a>
+    </div>
+
+</form>
     
     <div id="modal-sucesso" class="modal-overlay" style="display: none;">
         <div class="modal-content">

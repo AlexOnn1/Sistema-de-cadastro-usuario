@@ -1,3 +1,10 @@
+/* Reset padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body{
     display: flex;
     align-items: center;
@@ -11,13 +18,14 @@ body{
     font-size: 1.6rem;
     font-weight: bold;
     text-align: center;
+    margin-bottom: 0.5rem;
 }
 
 .container{
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    width: 22rem;
+    width: 24rem;
     background-color: #FFFFFF;
     padding: 2rem 3rem;
     border-radius: 10px;
@@ -36,16 +44,25 @@ body{
     gap: 0.5rem;
 }
 
+.row-group {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
 .container form label{
     font-weight: 500;
 }
 
 .container form input[type="email"],
-.container form input[type="password"] {
+.container form input[type="password"],
+.container form input[type="text"],
+.container form input[type="number"] {
     border-radius: 8px;
     border: #CDCDCD solid 1px;
     padding: 0.8rem 0.6rem;
     width: 100%;
+    font-size: 1rem; /* Garante tamanho de fonte legível */
 }
 
 .form-group small {
@@ -72,6 +89,11 @@ body{
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+    transition: opacity 0.2s; /* Animação suave no hover */
+}
+
+.btn:hover {
+    opacity: 0.9;
 }
 
 .btn-primary {
@@ -84,22 +106,38 @@ body{
     color: #333;
 }
 
-.login-link {
+/* Links do Rodapé */
+.login-link, .footer-links {
     text-align: center;
     margin-top: 1rem;
     font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.login-link a, .footer-links a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 .login-link a {
     color: #0056b3;
-    text-decoration: none;
     font-weight: 600;
 }
 
-.login-link a:hover {
+.footer-links .create-account {
+    color: #0056b3;
+    font-weight: bold;
+}
+
+.login-link a:hover, .footer-links a:hover {
     text-decoration: underline;
 }
 
+/* Mensagens de Erro */
 .erro-container {
     display: none;
     background-color: #f8d7da;
@@ -115,14 +153,7 @@ body{
     font-size: 0.95rem;
 }
 
-.erro-container p:first-child {
-    margin-top: 0;
-}
-
-.erro-container p:last-child {
-    margin-bottom: 0;
-}
-
+/* Modal de Sucesso */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -177,41 +208,7 @@ body{
     font-weight: bold;
 }
 
-/* ... Restante do seu CSS anterior ... */
-
-/* Estilos específicos para o Login */
-
-.container h1 {
-    margin-bottom: 0.5rem; /* Ajuste fino para o título */
-}
-
-.footer-links {
-    display: flex;
-    flex-direction: column; /* Um link embaixo do outro */
-    align-items: center; /* Centralizados */
-    gap: 1rem; /* Espaço entre "Esqueceu a senha" e "Criar conta" */
-    margin-top: 1.5rem;
-}
-
-.footer-links a {
-    text-decoration: none;
-    font-size: 0.9rem;
-    color: #333;
-    font-weight: 500;
-}
-
-/* Destaque para o link de "Esqueceu a senha" (opcional: sublinhado) */
-.footer-links .forgot-pass {
-    color: #555;
-    text-decoration: underline;
-}
-
-/* Destaque para o link de "Criar conta" */
-.footer-links .create-account {
-    color: #0056b3; /* Azul do botão */
-    font-weight: bold;
-}
-
-.footer-links a:hover {
-    opacity: 0.8;
+/* Utilitários */
+.hidden {
+    display: none !important;
 }

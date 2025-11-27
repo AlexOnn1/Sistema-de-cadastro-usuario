@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-require_once 'conexao.php'; // <--- IMPORTANTE: Conexão centralizada
+require_once 'conexao.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
 
@@ -24,7 +24,6 @@ try {
     } else {
         echo json_encode(['sucesso' => false, 'erros' => ['Erro ao excluir conta.']]);
     }
-
 } catch (PDOException $e) {
     echo json_encode(['sucesso' => false, 'erros' => ['Erro no banco'], 'debug' => $e->getMessage()]);
 }

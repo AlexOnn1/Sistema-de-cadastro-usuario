@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .container { width: 90%; max-width: 1100px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; vertical-align: middle; }
+        th { background-color: #f8f9fa; color: #333; font-weight: bold; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+        .badge-admin { background-color: #d1e7dd; color: #0f5132; }
+        .badge-comum { background-color: #cfe2ff; color: #084298; }
+
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.75rem; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; margin-right: 5px; transition: opacity 0.2s;}
+        .btn-sm:hover { opacity: 0.8; }
+
+        .btn-trash { background-color: #dc3545; color: white; }
+        .btn-promote { background-color: #198754; color: white; }
+        .btn-demote { background-color: #ffc107; color: #333; }
+        
+        .header-admin { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <section class="container">
+        <div class="header-admin">
+            <h1>Painel Admin</h1>
+            <div>
+                <a href="perfil.html" class="btn btn-secondary" style="display:inline-block; width:auto; margin-right: 10px;">Meu Perfil</a>
+                <a href="../src/logout.php" class="btn btn-danger" style="display:inline-block; width:auto; text-decoration:none; padding: 0.5rem 1rem;">Sair</a>
+            </div>
+        </div>
+
+        <h3>Gerenciamento de Usuários</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Tipo Atual</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-usuarios">
+                <tr><td colspan="5" style="text-align:center">Carregando...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        let meuId = null;
+        fetch('../src/get_perfil.php').then(r => r.json()).then(d => { meuId = d.sucesso ? d.id : null; });
+
+        function carregarUsuarios() {
+            fetch('../src/admin_listar.php')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('tabela-usuarios');
+                tbody.innerHTML = '';
+
+                if (!data.sucesso) {
+                    tbody.innerHTML = `<tr><td colspan="5">${data.erro || 'Erro ao carregar'}</td></tr>`;
+                    return;
+                }
+
+                data.dados.forEach(user => {
+                    const isAdmin = user.tp_usuario === 'admin';
+                    const badgeClass = isAdmin ? 'badge-admin' : 'badge-comum';
+                    
+                    let botoesHtml = '';
+                    if (isAdmin) {
+                        botoesHtml += `<button class="btn-sm btn-demote" onclick="alterarTipo(${user.id}, 'comum')">⬇ Virar Comum</button>`;
+                    } else {
+                        botoesHtml += `<button class="btn-sm btn-promote" onclick="alterarTipo(${user.id}, 'admin')">⬆ Virar Admin</button>`;
+                    }
+
+                    botoesHtml += `<button class="btn-sm btn-trash" onclick="deletarUsuario(${user.id})">Excluir</button>`;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${user.id}</td>
+                        <td>${user.nome} ${user.sobrenome || ''}</td>
+                        <td>${user.email}</td>
+                        <td><span class="badge ${badgeClass}">${user.tp_usuario.toUpperCase()}</span></td>
+                        <td>${botoesHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(err => console.error('Erro:', err));
+        }
+
+        
+        function alterarTipo(id, novoTipo) {
+            const acao = novoTipo === 'admin' ? 'PROMOVER este usuário a ADMIN' : 'REBAIXAR este usuário para COMUM';
+            if(!confirm(`Tem certeza que deseja ${acao}?`)) return;
+
+            fetch('../src/admin_alterar_tipo.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, tipo: novoTipo })
+            })
+            .then(res => res.json())
+            .then(data => { if(data.sucesso) carregarUsuarios(); else alert(data.erro || 'Erro'); })
+            .catch(() => alert('Erro de conexão'));
+        }
+
+        function deletarUsuario(id) {
+            if(!confirm('Tem certeza que deseja apagar este usuário permanentemente?')) return;
+
+            fetch('../src/admin_deletar.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(data => { if (data.sucesso) carregarUsuarios(); else alert(data.erro || 'Erro'); })
+            .catch(() => alert('Erro'));
+        }
+
+        carregarUsuarios();
+    </script>
+</body>
+</html>
