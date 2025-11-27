@@ -1,6 +1,6 @@
 -- Criar banco de dados
-CREATE DATABASE IF NOT EXISTS Projeto_Trabalho;
-USE Projeto_Trabalho;
+CREATE DATABASE IF NOT EXISTS projeto_trabalho;
+USE projeto_trabalho;
 
 -- Criar tabela de usuários
 CREATE TABLE IF NOT EXISTS usuarios (
