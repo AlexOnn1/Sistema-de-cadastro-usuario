@@ -11,4 +11,3 @@
 
 ## Ações para o futuro
 - Tentar automatizar os testes com PHPUnit na próxima versão.
-- Dar deploy da aplicação na internet
