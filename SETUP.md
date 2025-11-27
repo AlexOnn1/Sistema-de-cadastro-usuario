@@ -1,11 +1,12 @@
-<<<<<<< HEAD
-# Sistema de Cadastro de Usuário
+# Guia de Setup - Sistema de Cadastro e Gestão de Usuários
 
 ## Pré-requisitos
 
-1. **PHP 7.4+** com extensão PDO MySQL
-2. **MySQL 5.7+** ou MariaDB
-3. **Servidor HTTP** (Apache, Nginx, etc.)
+- **PHP 7.4+** com extensão PDO MySQL
+- **MySQL 5.7+** ou MariaDB
+- **Apache** (recomendado usar XAMPP)
+- **Navegador moderno** (Chrome, Firefox, Edge)
+- **(Opcional) ngrok** para acesso remoto durante desenvolvimento
 
 ## Setup do Banco de Dados
 
@@ -15,33 +16,6 @@ Você pode criar o banco de dados de duas formas:
 
 #### Opção A: Usando phpMyAdmin
 1. Abra http://localhost/phpmyadmin
-=======
-# 📋 Sistema de Cadastro de Usuário
-
-## 📋 Índice
-- [Pré-requisitos](#pré-requisitos)
-- [Setup do Banco de Dados](#setup-do-banco-de-dados)
-- [Configuração do Servidor](#configuração-do-servidor)
-- [Testando a Conexão](#testando-a-conexão)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Segurança](#segurança)
-- [Troubleshooting](#troubleshooting)
-
-## 📦 Pré-requisitos
-
-- **PHP 7.4+** com extensão PDO MySQL
-- **MySQL 5.7+** ou MariaDB
-- **Servidor HTTP** (Apache, Nginx, etc.)
-
-## 🗄️ Setup do Banco de Dados
-
-### 1️⃣ Criar o Banco de Dados
-
-Escolha uma das opções abaixo:
-
-#### Opção A: Usando phpMyAdmin
-1. Abra `http://localhost/phpmyadmin`
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
 2. Clique em "Novo"
 3. Digite `Projeto_Trabalho` como nome do banco
 4. Clique em "Criar"
@@ -51,27 +25,24 @@ Escolha uma das opções abaixo:
 mysql -u root -p < database.sql
 ```
 
-<<<<<<< HEAD
-### 2. Criar a Tabela de Usuários
+### 2. Verificar a Tabela de Usuários
 
-Se você usou phpMyAdmin, execute este SQL na aba "SQL":
-=======
-### 2️⃣ Criar a Tabela de Usuários
-
-Se utilizou **phpMyAdmin**, execute este SQL na aba "SQL":
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
+O arquivo `database.sql` já contém a tabela `usuarios` com a seguinte estrutura:
 
 ```sql
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE NOT NULL,
     senha VARCHAR(255) NOT NULL,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    nome_completo VARCHAR(100),
+    telefone VARCHAR(20),
+    tipo_usuario ENUM('comum', 'admin') DEFAULT 'comum',
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ativo BOOLEAN DEFAULT true
 );
 ```
 
-<<<<<<< HEAD
-Se usou o arquivo `database.sql`, ele já foi executado.
+Se usou o arquivo `database.sql`, a tabela já foi criada automaticamente.
 
 ### 3. Criar Usuário MySQL (Opcional)
 
@@ -85,97 +56,112 @@ FLUSH PRIVILEGES;
 
 ## Configuração do Servidor
 
-### Se está usando XAMPP:
-1. Coloque a pasta do projeto em `C:\xampp\htdocs\`
-2. Inicie Apache e MySQL no painel do XAMPP
-=======
-Se usou o **arquivo `database.sql`**, a tabela já foi criada automaticamente.
+### XAMPP (Recomendado)
+1. Coloque a pasta do projeto em `C:\xampp\htdocs\Sistema-de-cadastro-usuario\`
+2. Inicie **Apache** e **MySQL** no painel de controle do XAMPP
+3. Acesse: http://localhost/Sistema-de-cadastro-usuario/
 
-### 3️⃣ Criar Usuário MySQL (Opcional)
-
-Se não possui um usuário chamado `gilma` com senha `1234`, execute:
-
-```sql
-CREATE USER 'gilma'@'localhost' IDENTIFIED BY '1234';
-GRANT ALL PRIVILEGES ON Projeto_Trabalho.* TO 'gilma'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-> ⚠️ **Aviso de Segurança**: Altere a senha padrão em produção!
-
-## ⚙️ Configuração do Servidor
-
-### Se está usando XAMPP:
-1. Coloque a pasta do projeto em `C:\xampp\htdocs\`
-2. Inicie **Apache** e **MySQL** no painel do XAMPP
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
-3. Acesse `http://localhost/Sistema-de-cadastro-usuario/index.html`
-
-### Se está usando outro servidor:
+### Outro Servidor
 Configure o virtual host para apontar para a pasta raiz do projeto.
 
-<<<<<<< HEAD
+## Acesso Remoto com ngrok
+
+### Instalação
+1. Baixe ngrok em: https://ngrok.com/download
+2. Extraia o arquivo em um local acessível (ex: `C:\ngrok`)
+3. Adicione à variável de ambiente PATH (opcional)
+
+### Iniciando Túnel
+
+1. **Abra o PowerShell/CMD no diretório do ngrok:**
+   ```bash
+   cd C:\ngrok
+   ```
+
+2. **Inicie o túnel:**
+   ```bash
+   .\ngrok http 80
+   ```
+
+3. **Copie a URL gerada** (ex: `https://abc123.ngrok.io`)
+
+4. **Acesse remotamente:**
+   ```
+   https://abc123.ngrok.io/Sistema-de-cadastro-usuario/
+   ```
+
+### Compartilhando com Equipe
+- Cada vez que ngrok é reiniciado, a URL muda
+- Comunique a nova URL para os membros da equipe
+- Use a URL pública para testes remotos
+
+⚠️ **Nota:** ngrok é uma solução temporária. Para produção, será necessário um servidor dedicado/VPS.
+
 ## Testando a Conexão
 
-Se receber erro "Erro ao conectar ao banco de dados":
+### Verificar MySQL
 
-1. Certifique-se de que o MySQL está rodando
-2. Verifique as credenciais em `src/register.php`:
-   - Host: `localhost`
-   - Database: `Projeto_Trabalho`
-   - User: `alex`
-   - Password: `Pato`
+1. Certifique-se de que o MySQL está rodando (painel do XAMPP)
+2. Teste a conexão via terminal:
+   ```bash
+   mysql -u alex -p -h localhost
+   ```
+   Quando solicitado, digite: `Pato`
 
-3. Teste a conexão MySQL:
-=======
-## 🔗 Testando a Conexão
+3. Dentro do MySQL, execute:
+   ```sql
+   USE Projeto_Trabalho;
+   SHOW TABLES;
+   SELECT * FROM usuarios;
+   ```
 
-Se receber o erro **"Erro ao conectar ao banco de dados"**:
+### Verificar Credenciais
 
-1. ✅ Certifique-se de que o MySQL está rodando
-2. ✅ Verifique as credenciais em `src/register.php`:
-   - **Host**: `localhost`
-   - **Database**: `Projeto_Trabalho`
-   - **User**: `gilma`
-   - **Password**: `1234`
+As credenciais padrão estão em `src/conexao.php`:
+- **Host:** `localhost`
+- **Database:** `Projeto_Trabalho`
+- **User:** `alex`
+- **Password:** `Pato`
 
-3. ✅ Teste a conexão MySQL via terminal:
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
-```bash
-mysql -u alex -p -h localhost
-(Digite a senha: Pato)
-USE Projeto_Trabalho;
-SHOW TABLES;
-```
+### Testar Aplicação
 
-<<<<<<< HEAD
+1. Acesse: http://localhost/Sistema-de-cadastro-usuario/
+2. Tente fazer um cadastro com um email novo
+3. Se funcionar, verifique no MySQL:
+   ```sql
+   SELECT * FROM usuarios WHERE email='seu-email@test.com';
+   ```
+
 ## Estrutura do Projeto
 
 ```
-├── index.html              # Página de cadastro
-├── login.html              # Página de login
-├── database.sql            # Script SQL para criar o banco
-=======
-## 📁 Estrutura do Projeto
-
-```
 Sistema-de-cadastro-usuario/
-├── index.html              # Página de cadastro
-├── login.html              # Página de login
-├── database.sql            # Script SQL para criar o banco
-├── SETUP.md                # Guia de setup (este arquivo)
-├── README.md               # Documentação principal
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
+├── index.html                    # Página de cadastro
+├── database.sql                  # Script SQL para criar banco
+├── README.md                     # Documentação principal
+├── SETUP.md                      # Este arquivo
 ├── public/
+│   ├── login.html               # Página de login
+│   ├── perfil.html              # Página de perfil do usuário
+│   ├── admin.html               # Painel administrativo
 │   └── css/
-│       └── style.css       # Estilos do projeto
-└── src/
-    ├── register.php        # Backend do cadastro
-    └── Javascript/
-        └── index.js        # Validações client-side
+│       └── style.css            # Estilos da aplicação
+├── src/
+│   ├── conexao.php              # Conexão com banco de dados
+│   ├── register.php             # Backend do cadastro
+│   ├── login.php                # Backend do login
+│   ├── logout.php               # Backend do logout
+│   ├── get_perfil.php           # Obter dados do perfil
+│   ├── Edicao-de-dados.php      # Editar dados do usuário
+│   ├── Exclusao-de-dados.php    # Deletar conta do usuário
+│   ├── admin_listar.php         # Listar todos os usuários
+│   ├── admin_alterar_tipo.php   # Alterar tipo de usuário
+│   ├── admin_deletar.php        # Deletar usuário (admin)
+│   └── Javascript/
+│       └── index.js             # Validações client-side
+└── docs/                        # Documentação adicional
 ```
 
-<<<<<<< HEAD
 ## Segurança
 
 - Senhas são hashadas com `password_hash()` (bcrypt)
@@ -185,54 +171,43 @@ Sistema-de-cadastro-usuario/
 
 ## Troubleshooting
 
+### "Erro ao conectar ao banco de dados"
+**Causas possíveis:**
+- MySQL não está rodando
+- Credenciais incorretas em `src/conexao.php`
+- Banco de dados não foi criado
+
+**Solução:**
+1. Verifique se MySQL está ativo no XAMPP
+2. Confirme as credenciais
+3. Execute: `mysql -u root -p < database.sql`
+
 ### "Erro ao processar o cadastro"
-- Verifique se o MySQL está rodando
-- Verifique o console do navegador (F12 > Console) para ver detalhes
-- Abra `src/register.php` diretamente para ver a resposta JSON com mais detalhes
+**Solução:**
+- Abra o console do navegador (F12 > Console) para ver detalhes
+- Verifique se o arquivo `src/register.php` existe
+- Verifique se a tabela `usuarios` foi criada
 
 ### "Este email já está cadastrado"
 - O email já existe no banco de dados
-- Use outro email
+- Use outro email ou delete o registro anterior
 
 ### "Os emails não correspondem"
-- Digite o mesmo email nos dois campos
+- Digite exatamente o mesmo email nos dois campos
 
 ### "As senhas não são iguais"
-- Digite a mesma senha nos dois campos de senha
-=======
-## 🔒 Segurança
+- Digite a mesma senha nos dois campos
 
-- ✅ Senhas são hashadas com `password_hash()` (bcrypt)
-- ✅ Dados são validados no lado do cliente e do servidor
-- ✅ Emails são únicos (UNIQUE constraint)
-- ✅ SQL Injection é prevenido com prepared statements
-- ⚠️ **Nunca** exponha credenciais em ambiente de produção
+### "Página em branco ou erro 404"
+- Verifique se o projeto está em `C:\xampp\htdocs\Sistema-de-cadastro-usuario\`
+- Reinicie Apache no XAMPP
+- Limpe o cache do navegador (Ctrl+Shift+Delete)
 
-## 🐛 Troubleshooting
+### "ngrok não funciona"
+- Verifique se Apache está rodando
+- Tente acessar `http://localhost` primeiro
+- Reinicie o ngrok e verifique a URL gerada
 
-### ❌ "Erro ao processar o cadastro"
-- Verifique se o MySQL está rodando
-- Verifique o console do navegador (`F12 > Console`) para ver detalhes
-- Abra `src/register.php` diretamente para ver a resposta JSON com mais informações
-
-### ❌ "Este email já está cadastrado"
-- O email já existe no banco de dados
-- Use outro email para o cadastro
-
-### ❌ "Os emails não correspondem"
-- Digite o mesmo email nos dois campos
-- Verifique se não há espaços em branco
-
-### ❌ "As senhas não são iguais"
-- Digite a mesma senha nos dois campos de senha
-- Verifique se não há espaços em branco ou maiúsculas/minúsculas diferentes
-
-### ❌ Erro de permissão ao conectar
-- Verifique se o usuário MySQL `alex` tem as permissões corretas
-- Execute novamente os comandos de criação de usuário (seção 3️⃣)
-
----
-
-**Versão**: 1.0  
-**Última atualização**: 12 de novembro de 2025
->>>>>>> 6e3c964ce8d640b6b31de08d74f7aa73e6842929
+### "Erro de permissão ao deletar usuário"
+- Verifique se o usuário logado é admin
+- Apenas admins podem deletar outros usuários

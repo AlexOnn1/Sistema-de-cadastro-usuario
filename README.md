@@ -1,6 +1,21 @@
-# Sistema de Gestão de Usuários
+# Sistema de Cadastro de Usuários
 
-Este é um projeto acadêmico de um Sistema de Gestão de Usuários, desenvolvido como parte das atividades do 2º Período. O objetivo é criar uma aplicação web que permita o cadastro, login, edição, exclusão e listagem de usuários, seguindo os requisitos funcionais e não funcionais definidos.
+Este é um projeto acadêmico de um **Sistema de Cadastro e Gestão de Usuários**, desenvolvido como parte das atividades do 2º Período. O objetivo é criar uma aplicação web completa que permita o cadastro, login, edição de dados, exclusão de contas, listagem de usuários e gerenciamento administrativo, seguindo os requisitos funcionais e não funcionais definidos.
+
+## 📋 Status do Projeto
+
+O projeto está em desenvolvimento ativo com as seguintes funcionalidades implementadas:
+
+✅ **Implementado:**
+- Cadastro de usuários com validação
+- Sistema de login/logout
+- Página de perfil com edição de dados
+- Exclusão de contas de usuário
+- Painel administrativo com listagem de usuários
+- Alteração de tipo de usuário (admin/comum)
+- Banco de dados MySQL com tabela de usuários
+- Autenticação com sessões PHP
+- Senhas criptografadas com bcrypt
 
 ## 📋 Gerenciamento do Projeto
 
@@ -31,10 +46,99 @@ Todo o gerenciamento de tarefas e o acompanhamento do status do projeto estão s
 ## 🛠️ Stack de Tecnologias
 
 * **Front-End:** HTML5, CSS3, JavaScript
-* **Back-End:** PhP
-* **Banco de Dados:** Mysql
+* **Back-End:** PHP 7.4+
+* **Banco de Dados:** MySQL 5.7+ / MariaDB
+* **Servidor:** Apache (XAMPP)
+* **Autenticação:** Sessões PHP + Bcrypt (password_hash)
 
-## 🗃️ Modelo de Dados
+## 📁 Estrutura do Projeto
+
+```
+Sistema-de-cadastro-usuario/
+├── index.html                    # Página de cadastro
+├── public/
+│   ├── login.html               # Página de login
+│   ├── perfil.html              # Página de perfil do usuário
+│   ├── admin.html               # Painel administrativo
+│   └── css/
+│       └── style.css            # Estilos da aplicação
+├── src/
+│   ├── conexao.php              # Conexão com banco de dados
+│   ├── register.php             # Backend do cadastro
+│   ├── login.php                # Backend do login
+│   ├── logout.php               # Backend do logout
+│   ├── get_perfil.php           # Obter dados do perfil
+│   ├── Edicao-de-dados.php      # Editar dados do usuário
+│   ├── Exclusao-de-dados.php    # Deletar conta do usuário
+│   ├── admin_listar.php         # Listar todos os usuários
+│   ├── admin_alterar_tipo.php   # Alterar tipo de usuário
+│   ├── admin_deletar.php        # Deletar usuário (admin)
+│   └── Javascript/
+│       └── index.js             # Validações client-side
+├── database.sql                 # Script SQL para criar banco
+├── README.md                    # Este arquivo
+└── SETUP.md                     # Guia de setup e troubleshooting
+```
+
+## ⚙️ Instalação e Setup
+
+### Pré-requisitos
+
+- **PHP 7.4+** com extensão PDO MySQL
+- **MySQL 5.7+** ou MariaDB
+- **Apache** (recomendado usar XAMPP)
+- **Navegador moderno** (Chrome, Firefox, Edge)
+
+### Instalação Local
+
+1. **Colocar pasta no servidor:**
+   ```
+   C:\xampp\htdocs\Sistema-de-cadastro-usuario\
+   ```
+
+2. **Iniciar MySQL e Apache no XAMPP**
+
+3. **Criar banco de dados:**
+   ```bash
+   mysql -u root -p < database.sql
+   ```
+
+4. **Criar usuário MySQL (se necessário):**
+   ```sql
+   CREATE USER 'alex'@'localhost' IDENTIFIED BY 'Pato';
+   GRANT ALL PRIVILEGES ON Projeto_Trabalho.* TO 'alex'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+
+5. **Acessar localmente:**
+   - http://localhost/Sistema-de-cadastro-usuario/
+
+### Acesso Remoto (Desenvolvimento)
+
+Atualmente, o projeto está disponível remotamente através do **ngrok** para fins de desenvolvimento e testes em equipe.
+
+#### Setup do ngrok
+
+1. **Instalar ngrok:**
+   - Baixar em https://ngrok.com/download
+
+2. **Iniciar túnel ngrok:**
+   ```bash
+   ngrok http 80
+   ```
+
+3. **Copiar URL pública gerada** (ex: `https://abc123.ngrok.io`)
+
+4. **Acessar através da URL pública:**
+   - https://abc123.ngrok.io/Sistema-de-cadastro-usuario/
+
+⚠️ **Nota:** O ngrok é uma solução temporária para desenvolvimento. A URL é redefinida a cada reinício.
+
+### 🎯 Próximas Etapas
+
+**Sprint Seguinte:** Implementar solução de hospedagem 100% online para produção (servidor dedicado, VPS ou serviço de cloud hosting).
+
+Para mais detalhes, consulte [SETUP.md](SETUP.md)
 
 O projeto conta com um modelo conceitual e um modelo físico para o banco de dados.
 
@@ -42,15 +146,31 @@ O projeto conta com um modelo conceitual e um modelo físico para o banco de dad
 
 | Coluna | Tipo | Restrições |
 | :--- | :--- | :--- |
-| id_nome | int | (PK) |
-| nome_comp | varchar(75) | |
-| nome | varchar(25) | |
-| sobrenome | varchar(25) | |
-| idade | int(3) | |
-| email | varchar(75) | |
-| senha | varchar(50) | |
-| dt_criacao | datetime | |
-| tipo_usuario | enum('comum', 'admin')| |
+| id | int | (PK) AUTO_INCREMENT |
+| email | varchar(255) | UNIQUE NOT NULL |
+| senha | varchar(255) | NOT NULL |
+| nome_completo | varchar(100) | |
+| telefone | varchar(20) | |
+| tipo_usuario | enum('comum', 'admin') | DEFAULT 'comum' |
+| data_criacao | timestamp | DEFAULT CURRENT_TIMESTAMP |
+| ativo | boolean | DEFAULT true |
+
+## 🚀 Como Usar
+
+### Acesso Rápido
+
+1. **Página Inicial:** http://localhost/Sistema-de-cadastro-usuario/
+2. **Cadastro:** Preencha o formulário na página inicial
+3. **Login:** Clique em "Já tem uma conta?" na página inicial
+4. **Painel Admin:** Acesse com uma conta de tipo `admin`
+
+### Fluxo da Aplicação
+
+1. Usuário acessa a página inicial
+2. Cadastra-se com email e senha
+3. Realiza login com suas credenciais
+4. Acessa o perfil para visualizar/editar dados
+5. Admin pode gerenciar todos os usuários
 
 ## 👥 Equipe do Projeto
 
