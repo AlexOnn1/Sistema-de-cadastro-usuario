@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Acesso ao Sistema</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <section class="container">
+        <h1>Login</h1>
+
+        <form action="login.php" method="POST">
+            
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" placeholder="Insira seu e-mail" required>
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" placeholder="Insira sua senha" required>
+                </div>
+
+            <button type="submit" class="btn btn-primary">Entrar</button>
+
+            <div class="footer-links">
+                <a href="#" class="forgot-pass">Esqueceu a senha?</a>
+                <a href="index.html" class="create-account">Quer criar uma conta?</a>
+            </div>
+
+        </form>
+    </section>
+</body>
+</html>

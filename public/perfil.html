@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .welcome-text { text-align: center; margin-bottom: 2rem; color: #444; }
+        .action-buttons { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
+        .hidden { display: none; }
+        .btn-danger { background-color: #dc3545; color: white; border: none; } /* Vermelho */
+        .btn-warning { background-color: #ffc107; color: #333; border: none; } /* Amarelo */
+        .btn-logout { background-color: #6c757d; color: white; text-align: center; text-decoration: none; display: block; padding: 0.75rem; border-radius: 8px; font-weight: bold;}
+        
+        /* Ajuste do formulário de edição para caber no card */
+        #form-editar { margin-top: 1.5rem; border-top: 1px solid #ccc; padding-top: 1rem; }
+    </style>
+</head>
+<body>
+    <section class="container">
+        <h1>Minha Conta</h1>
+        <p class="welcome-text">Bem-vindo ao sistema!</p>
+
+        <div class="action-buttons" id="menu-principal">
+            <button class="btn btn-primary" onclick="mostrarEditar()">Editar Meus Dados</button>
+            <button class="btn btn-danger" onclick="confirmarExclusao()">Excluir Minha Conta</button>
+            
+            <a href="../src/logout.php" class="btn-logout">Sair (Logout)</a>
+        </div>
+
+        <form id="form-editar" class="hidden">
+            <h3>Atualizar Dados</h3>
+            
+            <div class="form-group">
+                <label>Novo E-mail</label>
+                <input type="email" name="novoEmail" placeholder="Novo e-mail (opcional)">
+            </div>
+            <div class="form-group">
+                <label>Confirmar E-mail</label>
+                <input type="email" name="ConfirmarNovoEmail" placeholder="Confirme o novo e-mail">
+            </div>
+
+            <div class="form-group">
+                <label>Nova Senha</label>
+                <input type="password" name="NovaSenha" placeholder="Nova senha (opcional)">
+            </div>
+            <div class="form-group">
+                <label>Confirmar Senha</label>
+                <input type="password" name="ConfirmarNovaSenha" placeholder="Confirme a nova senha">
+            </div>
+
+            <div class="button-group" style="margin-top: 1rem;">
+                <button type="button" class="btn btn-secondary" onclick="cancelarEdicao()">Voltar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+            <div id="msg-edicao" style="margin-top: 10px; text-align: center; font-size: 0.9rem;"></div>
+        </form>
+
+    </section>
+
+    <script>
+        // Funções de interface (Mostrar/Esconder)
+        function mostrarEditar() {
+            document.getElementById('menu-principal').classList.add('hidden');
+            document.getElementById('form-editar').classList.remove('hidden');
+        }
+
+        function cancelarEdicao() {
+            document.getElementById('menu-principal').classList.remove('hidden');
+            document.getElementById('form-editar').classList.add('hidden');
+            document.getElementById('msg-edicao').innerHTML = '';
+        }
+
+        // Lógica de Exclusão
+        function confirmarExclusao() {
+            if(confirm("Tem certeza? Essa ação não pode ser desfeita e sua conta será apagada.")) {
+                fetch('../src/Exclusao-de-dados.php')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.sucesso) {
+                        alert("Conta excluída com sucesso.");
+                        window.location.href = 'login.html';
+                    } else {
+                        alert("Erro: " + (data.erros ? data.erros[0] : 'Erro desconhecido'));
+                    }
+                })
+                .catch(err => console.error(err));
+            }
+        }
+
+        // Lógica de Edição (Envio do formulário via Fetch)
+        document.getElementById('form-editar').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const msgBox = document.getElementById('msg-edicao');
+
+            fetch('../src/Edicao-de-dados.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.sucesso) {
+                    msgBox.style.color = 'green';
+                    msgBox.innerHTML = "Dados atualizados com sucesso!";
+                    this.reset();
+                    // Opcional: esperar 2 segundos e voltar pro menu
+                    setTimeout(cancelarEdicao, 2000);
+                } else {
+                    msgBox.style.color = 'red';
+                    msgBox.innerHTML = data.erros ? data.erros.join('<br>') : 'Erro ao atualizar';
+                }
+            })
+            .catch(err => {
+                msgBox.innerHTML = "Erro de conexão com o servidor.";
+            });
+        });
+    </script>
+</body>
+</html>

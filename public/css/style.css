@@ -176,3 +176,42 @@ body{
     padding: 0.75rem;
     font-weight: bold;
 }
+
+/* ... Restante do seu CSS anterior ... */
+
+/* Estilos específicos para o Login */
+
+.container h1 {
+    margin-bottom: 0.5rem; /* Ajuste fino para o título */
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column; /* Um link embaixo do outro */
+    align-items: center; /* Centralizados */
+    gap: 1rem; /* Espaço entre "Esqueceu a senha" e "Criar conta" */
+    margin-top: 1.5rem;
+}
+
+.footer-links a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Destaque para o link de "Esqueceu a senha" (opcional: sublinhado) */
+.footer-links .forgot-pass {
+    color: #555;
+    text-decoration: underline;
+}
+
+/* Destaque para o link de "Criar conta" */
+.footer-links .create-account {
+    color: #0056b3; /* Azul do botão */
+    font-weight: bold;
+}
+
+.footer-links a:hover {
+    opacity: 0.8;
+}
