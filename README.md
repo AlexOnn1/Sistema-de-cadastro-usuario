@@ -140,20 +140,20 @@ Atualmente, o projeto está disponível remotamente através do **ngrok** para f
 
 Para mais detalhes, consulte [SETUP.md](SETUP.md)
 
-O projeto conta com um modelo conceitual e um modelo físico para o banco de dados.
+## 🗃️ Modelo de Dados
 
-### Modelo Físico (Tabela `Usuario`)
+O projeto utiliza um banco de dados MySQL com a seguinte estrutura:
+
+### Modelo Físico (Tabela `usuarios`)
 
 | Coluna | Tipo | Restrições |
 | :--- | :--- | :--- |
-| id | int | (PK) AUTO_INCREMENT |
-| email | varchar(255) | UNIQUE NOT NULL |
-| senha | varchar(255) | NOT NULL |
-| nome_completo | varchar(100) | |
-| telefone | varchar(20) | |
-| tipo_usuario | enum('comum', 'admin') | DEFAULT 'comum' |
-| data_criacao | timestamp | DEFAULT CURRENT_TIMESTAMP |
-| ativo | boolean | DEFAULT true |
+| id | INT | PRIMARY KEY, AUTO_INCREMENT |
+| email | VARCHAR(75) | UNIQUE, NOT NULL |
+| senha | VARCHAR(50) | NOT NULL |
+| data_criacao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+
+**Banco de Dados:** `Projeto_Trabalho`
 
 ## 🚀 Como Usar
 
