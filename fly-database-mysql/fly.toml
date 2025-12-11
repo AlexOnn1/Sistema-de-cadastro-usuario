@@ -1,38 +1,22 @@
-# fly.toml app configuration file generated for sistema-de-cadastro-db on 2025-12-10T22:45:00-03:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = 'sistema-de-cadastro-db'
 primary_region = 'gru'
 
 [build]
   image = 'mariadb:10.11'
 
-[http_service]
-  internal_port = 3306
-  force_https = true
-  # Remove autostop/start daqui, pois vamos definir a política na seção [[vm]]
-  # auto_stop_machines = 'stop' 
-  # auto_start_machines = true
-  min_machines_running = 0 # Esta linha pode ser ignorada ou removida.
-  processes = ['app'] # A definição de processos deve ser aqui ou no bloco principal [processes]
+# REMOVEMOS O BLOCO [http_service] QUE CAUSAVA O ERRO
 
-# Configuração Padrão da Máquina Virtual
-[[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
-  # Definições de Auto-Start/Stop
-  auto_start = true
-  auto_stop = false # Garante que o banco de dados não pare
-  min_machines_running = 1 # Garante que sempre haja uma máquina rodando
-
-# Configuração do Volume Persistente
 [mounts]
-  source = "sistema_cadastro_vol" 
-  destination = "/var/lib/mysql" 
+  source = "sistema_cadastro_vol"
+  destination = "/var/lib/mysql"
 
-# Definição do Comando Principal (O que rodar quando a máquina iniciar)
 [processes]
-  app = "mariadbd" # Comando que inicia o MariaDB
+  app = "mariadbd"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
+  auto_start = true
+  auto_stop = false # Garante que o banco não durma
+  min_machines_running = 1

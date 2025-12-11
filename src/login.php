@@ -1,4 +1,5 @@
 <?php
+// login.php ALTERADO PARA TEXTO PURO (INSEGURO - APENAS PARA TESTE)
 session_start();
 require_once 'conexao.php';
 
@@ -11,11 +12,16 @@ if (!$email || !$senha) {
 }
 
 try {
+    // Busca o usuário pelo email
     $stmt = $pdo->prepare("SELECT id, nome, email, senha, tp_usuario FROM usuarios WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $usuario = $stmt->fetch();
 
-    if ($usuario && password_verify($senha, $usuario['senha'])) {
+    // --- AQUI ESTÁ A MUDANÇA CRÍTICA ---
+    // Removemos password_verify() e usamos comparação direta (===)
+    // porque sua senha no banco é texto puro ("desenrolado")
+    if ($usuario && $senha === $usuario['senha']) { 
+        
         $_SESSION['user_id'] = $usuario['id'];
         $_SESSION['user_name'] = $usuario['nome'];
         $_SESSION['user_email'] = $usuario['email'];

@@ -1,131 +1,71 @@
 <?php
+// src/Edicao-de-dados.php - AJUSTADO PARA VARCHAR(16) / TEXTO PURO
 session_start();
-header('Content-Type: application/json');
-
-error_reporting(E_ALL);
-ini_set('display_errors', 0); 
-
 require_once 'conexao.php';
 
-$erros = [];
-$user_id = $_SESSION['user_id'] ?? null; 
+header('Content-Type: application/json');
 
-if (!$user_id) { 
-    echo json_encode(['sucesso' => false, 'erros' => ['Necessário estar logado']]);
+// Verifica se está logado
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não autenticado.']);
     exit();
 }
 
-// 1. Recebendo os dados
-$novoNome = trim($_POST['nome'] ?? '');
-$novoSobrenome = trim($_POST['sobrenome'] ?? '');
-$novaIdade = $_POST['idade'] ?? ''; 
-$novoEmail = trim($_POST['novoEmail'] ?? ''); 
-$ConfirmarNovoEmail = trim($_POST['ConfirmarNovoEmail'] ?? ''); 
-$NovaSenha = $_POST['NovaSenha'] ?? '';
-$ConfirmarNovaSenha = $_POST['ConfirmarNovaSenha'] ?? '';
+$userId = $_SESSION['user_id'];
+$dados = json_decode(file_get_contents('php://input'), true);
 
-// 2. Validações
-
-// A. Nome (Se preenchido)
-$atualizarNome = false;
-if ($novoNome !== '') {
-    if (strlen($novoNome) > 25) { $erros[] = "Nome muito longo (máx 25)."; }
-    else { $atualizarNome = true; }
+if (!$dados) {
+    // Fallback para POST form-data se não for JSON
+    $dados = $_POST;
 }
 
-// B. Sobrenome (Se preenchido)
-$atualizarSobrenome = false;
-if ($novoSobrenome !== '') {
-    if (strlen($novoSobrenome) > 25) { $erros[] = "Sobrenome muito longo (máx 25)."; }
-    else { $atualizarSobrenome = true; }
-}
+$nome = trim($dados['nome'] ?? '');
+$sobrenome = trim($dados['sobrenome'] ?? '');
+$email = trim($dados['email'] ?? '');
+$novaSenha = $dados['senha'] ?? ''; // Campo da nova senha
 
-// C. Idade (Se preenchido)
-$atualizarIdade = false;
-if ($novaIdade !== '') {
-    $idadeInt = filter_var($novaIdade, FILTER_VALIDATE_INT);
-    if (!$idadeInt || $idadeInt < 1 || $idadeInt > 120) { 
-        $erros[] = "Idade inválida."; 
-    } else { 
-        $atualizarIdade = true; 
-    }
-}
-
-// D. Email (Se preenchido)
-$atualizarEmail = false;
-if ($novoEmail !== '') { 
-    $atualizarEmail = true;
-    if (!filter_var($novoEmail, FILTER_VALIDATE_EMAIL)) { $erros[] = "Novo email inválido."; }
-    elseif ($ConfirmarNovoEmail === '' || $novoEmail !== $ConfirmarNovoEmail) { $erros[] = "Os emails não correspondem."; }
-}
-
-// E. Senha (Se preenchido)
-$atualizarSenha = false;
-if ($NovaSenha !== '') {
-    $atualizarSenha = true;
-    if ($ConfirmarNovaSenha === '' || $NovaSenha !== $ConfirmarNovaSenha) { $erros[] = "As senhas não são iguais."; }
-    elseif (strlen($NovaSenha) < 8 || strlen($NovaSenha) > 16) { $erros[] = "A senha deve ter entre 8 e 16 caracteres."; }
-}
-
-// Verifica se tem erros
-if (!empty($erros)) { echo json_encode(['sucesso' => false, 'erros' => $erros]); exit(); }
-
-// Verifica se PELO MENOS UM campo foi preenchido
-if (!$atualizarNome && !$atualizarSobrenome && !$atualizarIdade && !$atualizarEmail && !$atualizarSenha) {
-    echo json_encode(['sucesso' => false, 'erros' => ['Nenhum campo foi alterado.']]);
+// Validações Básicas
+if (empty($nome) || empty($sobrenome) || empty($email)) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Preencha todos os campos obrigatórios.']);
     exit();
 }
 
 try {
-    $sqlparts = [];
-    $params = ['id' => $user_id];
+    // Prepara a query base
+    $sql = "UPDATE usuarios SET nome = :nome, sobrenome = :sobrenome, email = :email";
+    $params = [
+        'nome' => $nome,
+        'sobrenome' => $sobrenome,
+        'email' => $email,
+        'id' => $userId
+    ];
 
-    // Montando a Query dinamicamente
-    if ($atualizarNome) {
-        $sqlparts[] = "nome = :nome";
-        $params['nome'] = $novoNome;
-    }
-
-    if ($atualizarSobrenome) {
-        $sqlparts[] = "sobrenome = :sobrenome";
-        $params['sobrenome'] = $novoSobrenome;
-    }
-
-    if ($atualizarIdade) {
-        $sqlparts[] = "idade = :idade";
-        $params['idade'] = $novaIdade;
-    }
-
-    if ($atualizarEmail) { 
-        $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :novoEmail AND id != :id");
-        $stmtVerify->execute(['novoEmail' => $novoEmail, 'id' => $user_id]); 
-        
-        if ($stmtVerify->fetchColumn() > 0) {
-            echo json_encode(['sucesso' => false, 'erros' => ['Email já em uso por outro usuário.']]); 
+    // Lógica da Senha (A MUDANÇA ESTÁ AQUI)
+    if (!empty($novaSenha)) {
+        // Valida tamanho para não quebrar o banco
+        if (strlen($novaSenha) > 16) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'A nova senha deve ter no máximo 16 caracteres.']);
             exit();
         }
-        $sqlparts[] = "email = :novoEmail";
-        $params['novoEmail'] = $novoEmail;
-        $_SESSION['user_email'] = $novoEmail; 
+
+        // Adiciona a senha à query SEM HASH (Texto Puro)
+        $sql .= ", senha = :senha";
+        $params['senha'] = $novaSenha; 
     }
 
-    if ($atualizarSenha) {
-        $senhaHash = password_hash($NovaSenha, PASSWORD_DEFAULT);
-        $sqlparts[] = "senha = :senhaHash"; 
-        $params['senhaHash'] = $senhaHash; 
-    }
+    $sql .= " WHERE id = :id";
 
-    // Executa a atualização final
-    if (!empty($sqlparts)) {
-        $sql = "UPDATE usuarios SET " . implode(", ", $sqlparts) . " WHERE id = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        echo json_encode(['sucesso' => true, 'mensagem' => 'Dados atualizados com sucesso!']);
-        exit();
-    }
-    
+    // Executa
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+
+    // Atualiza a sessão se mudou o nome/email
+    $_SESSION['user_name'] = $nome;
+    $_SESSION['user_email'] = $email;
+
+    echo json_encode(['sucesso' => true, 'mensagem' => 'Dados atualizados com sucesso!']);
+
 } catch (PDOException $e) {
-    echo json_encode(['sucesso' => false, 'erros' => ['Erro no banco'], 'debug' => $e->getMessage()]);
-    exit();
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao atualizar: ' . $e->getMessage()]);
 }
 ?>
