@@ -246,16 +246,5 @@ $hash = password_hash(
   - https://fly.io/apps/sistema-de-cadastro-db
   - https://fly.io/apps/sistema-de-cadastro
 
- ## Contribuição
-
-- Abra uma issue descrevendo a mudança desejada.
-- Envie um pull request com descrições claras e testes quando aplicável.
-
- ## Licença
-
-Projeto acadêmico — sem licença explícita. Adicione uma licença se for publicar.
-
----
-
-Se quiser, eu adapto este README para incluir um guia passo-a-passo para deploy no Fly.io com exemplos de variáveis de ambiente e comandos CI/CD.
+ 
 
