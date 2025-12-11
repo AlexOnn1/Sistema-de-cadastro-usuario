@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once 'conexao.php';
 
-// Permite somente administradores
+// Alterar tipo (apenas admin)
 if (!isset($_SESSION['tp_usuario']) || $_SESSION['tp_usuario'] !== 'admin') {
     echo json_encode(['sucesso' => false, 'erro' => 'Acesso negado.']);
     exit();
@@ -19,7 +19,7 @@ if (!$idAlvo || !$novoTipo || !in_array($novoTipo, ['admin', 'comum'])) {
 }
 
 if ($idAlvo == $_SESSION['user_id'] && $novoTipo === 'comum') {
-    echo json_encode(['sucesso' => false, 'erro' => 'Você não pode remover seu próprio acesso de Admin.']);
+    echo json_encode(['sucesso' => false, 'erro' => 'Não é possível remover seu próprio admin.']);
     exit();
 }
 
@@ -28,6 +28,6 @@ try {
     $stmt->execute(['tipo' => $novoTipo, 'id' => $idAlvo]);
     echo json_encode(['sucesso' => true]);
 } catch (PDOException $e) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Erro no banco de dados.']);
+    echo json_encode(['sucesso' => false, 'erro' => 'Erro no banco.']);
 }
 ?>

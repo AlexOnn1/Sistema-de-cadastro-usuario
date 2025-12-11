@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once 'conexao.php';
 
+// Deletar usuário (apenas admin)
 if (!isset($_SESSION['tp_usuario']) || $_SESSION['tp_usuario'] !== 'admin') {
     echo json_encode(['sucesso' => false, 'erro' => 'Acesso negado.']);
     exit();
@@ -17,7 +18,7 @@ if (!$idParaDeletar) {
 }
 
 if ($idParaDeletar == $_SESSION['user_id']) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Você não pode se auto-excluir pelo painel.']);
+    echo json_encode(['sucesso' => false, 'erro' => 'Não é possível se auto-excluir.']);
     exit();
 }
 
@@ -26,6 +27,6 @@ try {
     $stmt->execute(['id' => $idParaDeletar]);
     echo json_encode(['sucesso' => true]);
 } catch (PDOException $e) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Erro ao deletar usuário.']);
+    echo json_encode(['sucesso' => false, 'erro' => 'Erro ao deletar.']);
 }
 ?>

@@ -9,33 +9,26 @@
         .welcome-text { text-align: center; margin-bottom: 2rem; color: #444; }
         .action-buttons { display: flex; flex-direction: column; gap: 1rem; width: 100%; }
         .btn-danger { background-color: #dc3545; color: white; border: none; }
-        /* Botão Amarelo para o Admin */
-        .btn-warning { background-color: #ffc107; color: #333; border: none; font-weight: bold; text-align: center; text-decoration: none; padding: 0.75rem; border-radius: 8px; display: block;}
-        .btn-logout { background-color: #6c757d; color: white; text-align: center; text-decoration: none; display: block; padding: 0.75rem; border-radius: 8px; font-weight: bold;}
-        
+        .btn-warning { background-color: #ffc107; color: #333; border: none; font-weight: bold; text-align: center; text-decoration: none; padding: 0.75rem; border-radius: 8px; display: block; }
+        .btn-logout { background-color: #6c757d; color: white; text-align: center; text-decoration: none; display: block; padding: 0.75rem; border-radius: 8px; font-weight: bold; }
         #form-editar { margin-top: 1.5rem; border-top: 1px solid #ccc; padding-top: 1rem; }
     </style>
 </head>
 <body>
     <section class="container">
         <h1>Minha Conta</h1>
-        
         <p class="welcome-text">Olá, <strong id="user-name">Usuário</strong>!</p>
 
         <div class="action-buttons" id="menu-principal">
-            
             <a href="admin.html" id="btn-admin" class="hidden btn-warning">Voltar ao Painel Admin</a>
-
             <button class="btn btn-primary" onclick="mostrarEditar()">Editar Meus Dados</button>
             <button class="btn btn-danger" onclick="confirmarExclusao()">Excluir Minha Conta</button>
-            
             <a href="../src/logout.php" class="btn-logout">Sair (Logout)</a>
         </div>
 
         <form id="form-editar" class="hidden">
             <h3>Atualizar Dados</h3>
             <p style="font-size: 0.8rem; color: #666; margin-bottom: 1rem; text-align: center;">Preencha apenas o que deseja alterar.</p>
-            
             <div class="row-group">
                 <div class="form-group" style="flex:1;">
                     <label for="nome">Nome</label>
@@ -80,45 +73,28 @@
     </section>
 
     <script>
-        // Variáveis globais para guardar os dados atuais
         let dadosUsuario = {};
 
-        // 1. Ao carregar a página, busca os dados e preenche o formulário
         document.addEventListener('DOMContentLoaded', function() {
             fetch('../src/get_perfil.php')
             .then(res => res.json())
             .then(data => {
                 if(data.sucesso) {
-                    dadosUsuario = data; // Guarda os dados na memória
-
-                    // Atualiza a saudação
+                    dadosUsuario = data;
                     document.getElementById('user-name').innerText = data.nome;
-
-                    // --- AQUI ESTÁ A MÁGICA: Preenche os inputs do formulário ---
                     document.getElementById('nome').value = data.nome;
                     document.getElementById('sobrenome').value = data.sobrenome;
                     document.getElementById('idade').value = data.idade;
-                    
-                    // Preenche o email atual no campo de "Novo Email" para facilitar a edição
                     document.getElementById('novoEmail').value = data.email;
                     document.getElementById('ConfirmarNovoEmail').value = data.email;
-
-                    // Também define como placeholder (caso o usuário apague o texto)
                     document.getElementById('nome').placeholder = data.nome;
                     document.getElementById('sobrenome').placeholder = data.sobrenome;
                     document.getElementById('idade').placeholder = data.idade;
                     document.getElementById('novoEmail').placeholder = data.email;
-                    // -----------------------------------------------------------
-
-                    // Se for admin, mostra o botão
-                    if(data.tp_usuario === 'admin') {
-                        document.getElementById('btn-admin').classList.remove('hidden');
-                    }
-                } else {
-                    window.location.href = 'login.html';
-                }
+                    if(data.tp_usuario === 'admin') { document.getElementById('btn-admin').classList.remove('hidden'); }
+                } else { window.location.href = 'login.html'; }
             })
-            .catch(err => console.error("Erro ao verificar sessão"));
+            .catch(err => console.error(err));
         });
 
         function mostrarEditar() {
@@ -130,8 +106,6 @@
             document.getElementById('menu-principal').classList.remove('hidden');
             document.getElementById('form-editar').classList.add('hidden');
             document.getElementById('msg-edicao').innerHTML = '';
-            
-            // Opcional: Reseta o form para os valores originais do banco de dados ao cancelar
             if(dadosUsuario.sucesso) {
                 document.getElementById('nome').value = dadosUsuario.nome;
                 document.getElementById('sobrenome').value = dadosUsuario.sobrenome;
@@ -148,12 +122,8 @@
                 fetch('../src/Exclusao-de-dados.php')
                 .then(res => res.json())
                 .then(data => {
-                    if(data.sucesso) {
-                        alert("Conta excluída com sucesso.");
-                        window.location.href = 'login.html';
-                    } else {
-                        alert("Erro: " + (data.erros ? data.erros[0] : 'Erro desconhecido'));
-                    }
+                    if(data.sucesso) { alert("Conta excluída com sucesso."); window.location.href = 'login.html'; }
+                    else { alert("Erro: " + (data.erros ? data.erros[0] : 'Erro desconhecido')); }
                 })
                 .catch(err => console.error(err));
             }
@@ -162,58 +132,33 @@
         document.getElementById('form-editar').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-            // Adiciona o email antigo caso o usuário não tenha mexido no campo novoEmail
-            // para garantir que o backend receba o email correto
-            
             const msgBox = document.getElementById('msg-edicao');
             msgBox.innerHTML = "Salvando...";
             msgBox.style.color = "#333";
-
-            // Pequena validação de email no front
             const email1 = document.getElementById('novoEmail').value;
             const email2 = document.getElementById('ConfirmarNovoEmail').value;
-            if(email1 !== email2) {
-                msgBox.style.color = '#dc3545';
-                msgBox.innerHTML = "Os emails não coincidem.";
-                return;
-            }
+            if(email1 !== email2) { msgBox.style.color = '#dc3545'; msgBox.innerHTML = "Os emails não coincidem."; return; }
 
             fetch('../src/Edicao-de-dados.php', {
                 method: 'POST',
-                body: JSON.stringify(Object.fromEntries(formData)), // Envia como JSON para casar com seu backend PHP
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: { 'Content-Type': 'application/json' }
             })
             .then(res => res.json())
             .then(data => {
                 if(data.sucesso) {
-                    msgBox.style.color = 'green';
-                    msgBox.innerHTML = "Dados atualizados com sucesso!";
-                    
-                    // Atualiza os dados locais para refletir a mudança sem precisar recarregar (F5)
+                    msgBox.style.color = 'green'; msgBox.innerHTML = "Dados atualizados com sucesso!";
                     dadosUsuario.nome = document.getElementById('nome').value;
                     dadosUsuario.sobrenome = document.getElementById('sobrenome').value;
                     dadosUsuario.email = document.getElementById('novoEmail').value;
                     dadosUsuario.idade = document.getElementById('idade').value;
-                    
-                    // Atualiza o nome na saudação imediatamente
                     document.getElementById('user-name').innerText = dadosUsuario.nome;
-
-                    setTimeout(() => {
-                        cancelarEdicao();
-                        msgBox.innerHTML = ""; 
-                    }, 1500);
+                    setTimeout(() => { cancelarEdicao(); msgBox.innerHTML = ""; }, 1500);
                 } else {
-                    msgBox.style.color = '#dc3545';
-                    msgBox.innerHTML = data.mensagem || (data.erros ? data.erros.join('<br>') : 'Erro ao atualizar');
+                    msgBox.style.color = '#dc3545'; msgBox.innerHTML = data.mensagem || (data.erros ? data.erros.join('<br>') : 'Erro ao atualizar');
                 }
             })
-            .catch(err => {
-                msgBox.style.color = '#dc3545';
-                msgBox.innerHTML = "Erro de conexão com o servidor.";
-                console.error(err);
-            });
+            .catch(err => { msgBox.style.color = '#dc3545'; msgBox.innerHTML = "Erro de conexão com o servidor."; console.error(err); });
         });
     </script>
 </body>

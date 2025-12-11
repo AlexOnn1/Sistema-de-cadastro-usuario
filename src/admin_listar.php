@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once 'conexao.php';
 
+// Listar usuários (apenas admin)
 if (!isset($_SESSION['tp_usuario']) || $_SESSION['tp_usuario'] !== 'admin') {
     echo json_encode(['sucesso' => false, 'erro' => 'Acesso negado.']);
     exit();

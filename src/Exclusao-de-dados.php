@@ -1,13 +1,9 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-
 require_once 'conexao.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
-
 if (!$user_id) {
     echo json_encode(['sucesso' => false, 'erros' => ['Você precisa estar logado.']]);
     exit();
