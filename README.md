@@ -51,15 +51,6 @@ Todo o gerenciamento de tarefas e o acompanhamento do status do projeto estão s
 * **Servidor:** Apache (XAMPP)
 * **Autenticação:** Sessões PHP + Bcrypt (password_hash)
 
-## 📁 Estrutura do Projeto
-
-```
-Sistema-de-cadastro-usuario/
-├── index.html                    # Página de cadastro
-├── public/
-│   ├── login.html               # Página de login
-│   ├── perfil.html              # Página de perfil do usuário
-│   ├── admin.html               # Painel administrativo
 │   └── css/
 │       └── style.css            # Estilos da aplicação
 ├── src/
@@ -85,96 +76,186 @@ Sistema-de-cadastro-usuario/
 ### Pré-requisitos
 
 - **PHP 7.4+** com extensão PDO MySQL
-- **MySQL 5.7+** ou MariaDB
-- **Apache** (recomendado usar XAMPP)
-- **Navegador moderno** (Chrome, Firefox, Edge)
+ # Sistema de Cadastro e Gestão de Usuários
 
-### Instalação Local
+ Aplicação web acadêmica que oferece registro, autenticação e painel de administração para usuários.
 
-1. **Colocar pasta no servidor:**
-   ```
-   C:\xampp\htdocs\Sistema-de-cadastro-usuario\
-   ```
+ ## Índice
 
-2. **Iniciar MySQL e Apache no XAMPP**
+ - [Visão geral](#visão-geral)
+ - [Status do projeto](#status-do-projeto)
+ - [Funcionalidades](#funcionalidades)
+ - [Arquitetura e fluxo](#arquitetura-e-fluxo)
+ - [Estrutura do repositório](#estrutura-do-repositório)
+ - [Instalação (local)](#instalação-local)
+ - [Executando com Docker](#executando-com-docker)
+ - [Banco de dados / Migração](#banco-de-dados--migração)
+ - [Testes e debug](#testes-e-debug)
+ - [Segurança e recomendações](#segurança-e-recomendações)
+ - [Deploy (observações)](#deploy-observações)
+ - [Contribuição](#contribuição)
+ - [Licença](#licença)
 
-3. **Criar banco de dados:**
-   ```bash
-   mysql -u root -p < database.sql
-   ```
+ ## Visão geral
 
-4. **Criar usuário MySQL (se necessário):**
-   ```sql
-   CREATE USER 'alex'@'localhost' IDENTIFIED BY 'Pato';
-   GRANT ALL PRIVILEGES ON Projeto_Trabalho.* TO 'alex'@'localhost';
-   FLUSH PRIVILEGES;
-   ```
+Aplicação completa para cadastro, login, edição e exclusão de contas, além de painel administrativo para gestão de usuários (promoção/rebaixamento e exclusão).
 
-5. **Acessar localmente:**
-   - http://localhost/Sistema-de-cadastro-usuario/
+Desenvolvida para fins acadêmicos, com foco em boas práticas de organização de código e comunicação entre front-end e back-end via JSON/API.
 
-### Acesso Remoto (Desenvolvimento)
+ ## Status do projeto
 
-Atualmente, o projeto está disponível remotamente através do **ngrok** para fins de desenvolvimento e testes em equipe.
+- Estado: funcional (cadastro, login, perfil, edição, exclusão, painel admin)
+- Script de migração e arquivo SQL incluídos para criar a tabela `usuarios`.
 
-#### Setup do ngrok
+ ## Funcionalidades
 
-1. **Instalar ngrok:**
-   - Baixar em https://ngrok.com/download
+- Cadastro de usuários com validações front-end e back-end.
+- Login e sessão com PHP.
+- Perfil do usuário: visualizar, editar, alterar senha e excluir conta.
+- Painel administrativo (lista de usuários, promover/rebaixar, excluir).
+- Endpoints JSON para operações administrativas.
 
-2. **Iniciar túnel ngrok:**
-   ```bash
-   ngrok http 80
-   ```
+ ## Arquitetura e fluxo
 
-3. **Copiar URL pública gerada** (ex: `https://abc123.ngrok.io`)
+- Front-end: HTML/CSS nas páginas públicas e JavaScript (fetch) para chamadas AJAX.
+- Back-end: PHP (PDO) para acesso ao MySQL.
+- Comunicação: formulários via POST e chamadas `fetch` retornando JSON.
 
-4. **Acessar através da URL pública:**
-   - https://abc123.ngrok.io/Sistema-de-cadastro-usuario/
+Fluxo resumido:
 
-⚠️ **Nota:** O ngrok é uma solução temporária para desenvolvimento. A URL é redefinida a cada reinício.
+1. Registro em `index.html` → `src/register.php`.
+2. Login em `public/login.html` → `src/login.php` (sessão iniciada).
+3. Acesso ao `public/perfil.html` ou `public/admin.html` conforme tipo.
 
-### 🎯 Próximas Etapas
+ ## Estrutura do repositório
 
-**Sprint Seguinte:** Implementar solução de hospedagem 100% online para produção (servidor dedicado, VPS ou serviço de cloud hosting).
+```
+Sistema-de-cadastro-usuario/
+├── index.html                  # Página de cadastro
+├── public/                     # Páginas públicas
+│   ├── login.html
+│   ├── perfil.html
+│   ├── admin.html
+│   └── css/style.css
+├── src/                        # Back-end PHP e scripts
+│   ├── conexao.php
+│   ├── register.php
+│   ├── login.php
+│   ├── logout.php
+│   ├── get_perfil.php
+│   ├── Edicao-de-dados.php
+│   ├── Exclusao-de-dados.php
+│   ├── admin_listar.php
+│   ├── admin_alterar_tipo.php
+│   ├── admin_deletar.php
+│   ├── admin_alterar_senha.php
+│   ├── admin_alterar_tipo.php
+│   ├── migracao.php
+│   └── Javascript/index.js
+├── database.sql
+├── Dockerfile
+├── fly.toml
+└── README.md
+```
 
-Para mais detalhes, consulte [SETUP.md](SETUP.md)
+ ## Instalação (local)
 
-## 🗃️ Modelo de Dados
+Pré-requisitos:
 
-O projeto utiliza um banco de dados MySQL com a seguinte estrutura:
+- PHP 7.4+ com extensão `pdo_mysql`
+- MySQL / MariaDB
+- Apache (XAMPP recomendado)
 
-### Modelo Físico (Tabela `usuarios`)
+Passos rápidos:
 
-| Coluna | Tipo | Restrições |
-| :--- | :--- | :--- |
-| id | INT | PRIMARY KEY, AUTO_INCREMENT |
-| email | VARCHAR(75) | UNIQUE, NOT NULL |
-| senha | VARCHAR(50) | NOT NULL |
-| data_criacao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
+```powershell
+# copie o projeto para a pasta pública do servidor (exemplo XAMPP)
+Copy-Item -Path . -Destination 'C:\xampp\htdocs\Sistema-de-cadastro-usuario' -Recurse
+# importe o banco
+mysql -u root -p < database.sql
+```
 
-**Banco de Dados:** `Projeto_Trabalho`
+Ou rode a migração via navegador (uso único):
 
-## 🚀 Como Usar
+```
+http://localhost/Sistema-de-cadastro-usuario/src/migracao.php
+```
 
-### Acesso Rápido
+Ajuste `src/conexao.php` conforme credenciais do seu ambiente.
 
-1. **Página Inicial:** http://localhost/Sistema-de-cadastro-usuario/
-2. **Cadastro:** Preencha o formulário na página inicial
-3. **Login:** Clique em "Já tem uma conta?" na página inicial
-4. **Painel Admin:** Acesse com uma conta de tipo `admin`
+ ## Executando com Docker
 
-### Fluxo da Aplicação
+O `Dockerfile` presente cria uma imagem baseada em `php:8.2-apache`.
 
-1. Usuário acessa a página inicial
-2. Cadastra-se com email e senha
-3. Realiza login com suas credenciais
-4. Acessa o perfil para visualizar/editar dados
-5. Admin pode gerenciar todos os usuários
+Exemplo:
 
-## 👥 Equipe do Projeto
+```bash
+docker build -t sistema-cadastro .
+docker run --rm -p 8080:8080 -v $(pwd):/var/www/html sistema-cadastro
 
-* **Front-End:** Alexsander
-* **Back-End:** Luis, Fayrlysson, João
-* **Design:** Victor
+# acessar
+http://localhost:8080
+```
+
+ ## Banco de dados / Migração
+
+- `database.sql` cria a tabela `usuarios`.
+- `src/migracao.php` pode ser usado uma vez para criar a tabela e adicionar um admin de teste.
+
+Esquema (resumo):
+
+```sql
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(25) NOT NULL,
+  sobrenome VARCHAR(25) NOT NULL,
+  idade INT NOT NULL,
+  email VARCHAR(75) NOT NULL UNIQUE,
+  senha VARCHAR(16) NOT NULL,
+  tp_usuario VARCHAR(10) NOT NULL DEFAULT 'comum',
+  data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+ ## Testes e debug
+
+- `tests/test_runner.php` existe para testes básicos; execute via PHP CLI ou browser conforme o script.
+- Use o painel de Network do navegador para inspecionar respostas JSON das requisições.
+
+ ## Segurança e recomendações
+
+Notas importantes antes de produção:
+
+1. Senhas: atualmente o projeto usa `VARCHAR(16)` e salva senhas compatíveis com esse tamanho. Em produção troque para `VARCHAR(255)` e armazene hashes usando `password_hash()` e `password_verify()`.
+
+```php
+$hash = password_hash(
+    'sua_senha', PASSWORD_BCRYPT
+);
+```
+
+2. Configure HTTPS e cookies de sessão com `secure` e `httponly`.
+3. Adicione proteção CSRF em formulários sensíveis.
+4. Sanitização: valide e sanitize todas as entradas no servidor.
+
+ ## Deploy (observações)
+
+- Para deploy em serviços como Fly.io, configure variáveis de ambiente: `DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME`.
+- Garanta que o banco esteja em uma instância gerenciada ou privada.
+- Observação importante: para a aplicação rodar remotamente via Fly.io, ambos os serviços devem estar ativos — o app de banco e o app da aplicação. Verifique que os links abaixo estão em execução:
+  - https://fly.io/apps/sistema-de-cadastro-db
+  - https://fly.io/apps/sistema-de-cadastro
+
+ ## Contribuição
+
+- Abra uma issue descrevendo a mudança desejada.
+- Envie um pull request com descrições claras e testes quando aplicável.
+
+ ## Licença
+
+Projeto acadêmico — sem licença explícita. Adicione uma licença se for publicar.
+
+---
+
+Se quiser, eu adapto este README para incluir um guia passo-a-passo para deploy no Fly.io com exemplos de variáveis de ambiente e comandos CI/CD.
 
