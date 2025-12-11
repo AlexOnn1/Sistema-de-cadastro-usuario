@@ -80,27 +80,46 @@
     </section>
 
     <script>
-        // --- CÓDIGO NOVO: Verifica quem é o usuário ---
+        // Variáveis globais para guardar os dados atuais
+        let dadosUsuario = {};
+
+        // 1. Ao carregar a página, busca os dados e preenche o formulário
         document.addEventListener('DOMContentLoaded', function() {
             fetch('../src/get_perfil.php')
             .then(res => res.json())
             .then(data => {
                 if(data.sucesso) {
-                    // 1. Atualiza o nome na tela
+                    dadosUsuario = data; // Guarda os dados na memória
+
+                    // Atualiza a saudação
                     document.getElementById('user-name').innerText = data.nome;
 
-                    // 2. Se for admin, mostra o botão mágico
+                    // --- AQUI ESTÁ A MÁGICA: Preenche os inputs do formulário ---
+                    document.getElementById('nome').value = data.nome;
+                    document.getElementById('sobrenome').value = data.sobrenome;
+                    document.getElementById('idade').value = data.idade;
+                    
+                    // Preenche o email atual no campo de "Novo Email" para facilitar a edição
+                    document.getElementById('novoEmail').value = data.email;
+                    document.getElementById('ConfirmarNovoEmail').value = data.email;
+
+                    // Também define como placeholder (caso o usuário apague o texto)
+                    document.getElementById('nome').placeholder = data.nome;
+                    document.getElementById('sobrenome').placeholder = data.sobrenome;
+                    document.getElementById('idade').placeholder = data.idade;
+                    document.getElementById('novoEmail').placeholder = data.email;
+                    // -----------------------------------------------------------
+
+                    // Se for admin, mostra o botão
                     if(data.tp_usuario === 'admin') {
                         document.getElementById('btn-admin').classList.remove('hidden');
                     }
                 } else {
-                    // Se não estiver logado, chuta pro login
                     window.location.href = 'login.html';
                 }
             })
             .catch(err => console.error("Erro ao verificar sessão"));
         });
-        // ----------------------------------------------
 
         function mostrarEditar() {
             document.getElementById('menu-principal').classList.add('hidden');
@@ -111,7 +130,17 @@
             document.getElementById('menu-principal').classList.remove('hidden');
             document.getElementById('form-editar').classList.add('hidden');
             document.getElementById('msg-edicao').innerHTML = '';
-            document.getElementById('form-editar').reset();
+            
+            // Opcional: Reseta o form para os valores originais do banco de dados ao cancelar
+            if(dadosUsuario.sucesso) {
+                document.getElementById('nome').value = dadosUsuario.nome;
+                document.getElementById('sobrenome').value = dadosUsuario.sobrenome;
+                document.getElementById('idade').value = dadosUsuario.idade;
+                document.getElementById('novoEmail').value = dadosUsuario.email;
+                document.getElementById('ConfirmarNovoEmail').value = dadosUsuario.email;
+                document.getElementById('NovaSenha').value = '';
+                document.getElementById('ConfirmarNovaSenha').value = '';
+            }
         }
 
         function confirmarExclusao() {
@@ -133,29 +162,57 @@
         document.getElementById('form-editar').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            // Adiciona o email antigo caso o usuário não tenha mexido no campo novoEmail
+            // para garantir que o backend receba o email correto
+            
             const msgBox = document.getElementById('msg-edicao');
             msgBox.innerHTML = "Salvando...";
             msgBox.style.color = "#333";
 
+            // Pequena validação de email no front
+            const email1 = document.getElementById('novoEmail').value;
+            const email2 = document.getElementById('ConfirmarNovoEmail').value;
+            if(email1 !== email2) {
+                msgBox.style.color = '#dc3545';
+                msgBox.innerHTML = "Os emails não coincidem.";
+                return;
+            }
+
             fetch('../src/Edicao-de-dados.php', {
                 method: 'POST',
-                body: formData
+                body: JSON.stringify(Object.fromEntries(formData)), // Envia como JSON para casar com seu backend PHP
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
             .then(res => res.json())
             .then(data => {
                 if(data.sucesso) {
                     msgBox.style.color = 'green';
                     msgBox.innerHTML = "Dados atualizados com sucesso!";
-                    this.reset();
-                    setTimeout(cancelarEdicao, 2000);
+                    
+                    // Atualiza os dados locais para refletir a mudança sem precisar recarregar (F5)
+                    dadosUsuario.nome = document.getElementById('nome').value;
+                    dadosUsuario.sobrenome = document.getElementById('sobrenome').value;
+                    dadosUsuario.email = document.getElementById('novoEmail').value;
+                    dadosUsuario.idade = document.getElementById('idade').value;
+                    
+                    // Atualiza o nome na saudação imediatamente
+                    document.getElementById('user-name').innerText = dadosUsuario.nome;
+
+                    setTimeout(() => {
+                        cancelarEdicao();
+                        msgBox.innerHTML = ""; 
+                    }, 1500);
                 } else {
                     msgBox.style.color = '#dc3545';
-                    msgBox.innerHTML = data.erros ? data.erros.join('<br>') : 'Erro ao atualizar';
+                    msgBox.innerHTML = data.mensagem || (data.erros ? data.erros.join('<br>') : 'Erro ao atualizar');
                 }
             })
             .catch(err => {
                 msgBox.style.color = '#dc3545';
                 msgBox.innerHTML = "Erro de conexão com o servidor.";
+                console.error(err);
             });
         });
     </script>
