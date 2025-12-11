@@ -243,8 +243,9 @@ $hash = password_hash(
 - Para deploy em serviços como Fly.io, configure variáveis de ambiente: `DB_HOST`, `DB_USER`, `DB_PASS`, `DB_NAME`.
 - Garanta que o banco esteja em uma instância gerenciada ou privada.
 - Observação importante: para a aplicação rodar remotamente via Fly.io, ambos os serviços devem estar ativos — o app de banco e o app da aplicação. Verifique que os links abaixo estão em execução:
-  - https://fly.io/apps/sistema-de-cadastro-db
-  - https://fly.io/apps/sistema-de-cadastro
+  - [Aplicação](https://sistema-de-cadastro.fly.dev)
+  - [Banco de dados](https://sistema-de-cadastro-db.fly.dev)
 
  
+
 
