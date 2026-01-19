@@ -21,7 +21,7 @@ if ($senha === '' || $confirmarSenha === '') { $erros[] = "Preencha as senhas.";
 
 if (!empty($erros)) { echo json_encode(['sucesso' => false, 'erros' => $erros]); exit(); }
 
-$senhaParaSalvar = $senha;
+$senhaParaSalvar = password_hash($senha, PASSWORD_DEFAULT);
 
 try {
     $stmtVerify = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
@@ -43,3 +43,4 @@ try {
     exit();
 }
 ?>
+
